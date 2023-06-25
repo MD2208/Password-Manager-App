@@ -36,19 +36,23 @@ def generator():
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def save_password():
-    website_name = website_entry.get()
-    email = email_entry.get()
+    website_name = website_entry.get().lower().capitalize()
+    email = email_entry.get().lower()
     password = password_entry.get()
     # Check the website and email exists already
     global sites
     global exists_info
-    with open("registeration_data.csv",mode="r") as file:
-        registered_sites = file.read().split('\n')
-        for site_info in registered_sites:
-            if site_info!="":
-                site_info=site_info.split(',')
-                sites[site_info[0]]=site_info[1]
-                exists_info=site_info[2]
+    try:
+        with open("registeration_data.csv",mode="r") as file:
+            registered_sites = file.read().split('\n')
+            for site_info in registered_sites:
+                if site_info!="":
+                    site_info=site_info.split(',')
+                    sites[site_info[0]]=site_info[1]
+                    exists_info=site_info[2]
+    except FileExistsError:
+        with open("registeration_data.csv", mode='w') as file:
+            file.write("Website,Email,Password\n")
     if website_name in sites and sites[website_name]==email:
         messagebox.showerror(title="Website Exists", message="You have already registered this website by same email!\n"
                              f"Here is your password: {exists_info}")
